@@ -14,14 +14,15 @@ import javax.swing.JTextField;
  *
  * @author sarthakmanna
  */
+
 public class PeriodicPinger extends Thread {
-    public static final double TRANS_SPEED = 0.1; // in metres per nanosecond
+    public static final double TRANS_SPEED = 0.03; // in metres per nanosecond
     public static final int ITERATIONS = 1000, DELAY = 500;
     
-    PeriodicPinger(Client servercontact, JRadioButton rbconn, JTextField tfip, JButton btsubmit,
-            JTextField tftranstime, JTextField tfapproxdist, JTextArea tanotif) {
+    PeriodicPinger(Client servercontact, JRadioButton rbconn, JButton btstop, JTextField tfip, 
+            JButton btsubmit, JTextField tftranstime, JTextField tfapproxdist, JTextArea tanotif) {
         serverContact = servercontact;
-        rbConn = rbconn;
+        rbConn = rbconn; btStop = btstop;
         tfIP = tfip; tfTransTime = tftranstime; tfApproxDist = tfapproxdist;
         btSubmit = btsubmit;
         taNotif = tanotif;
@@ -30,12 +31,13 @@ public class PeriodicPinger extends Thread {
     Client serverContact;
     JRadioButton rbConn;
     JTextField tfIP, tfTransTime, tfApproxDist;
-    JButton btSubmit;
+    JButton btStop, btSubmit;
     JTextArea taNotif;
     
     public void run() {
         rbConn.setSelected(true);
         rbConn.setText("Connected");
+        btStop.setEnabled(true);
         tfIP.setEditable(false);
         btSubmit.setEnabled(false);
         
@@ -50,6 +52,7 @@ public class PeriodicPinger extends Thread {
         
         rbConn.setSelected(false);
         rbConn.setText("Disconnected");
+        btStop.setEnabled(false);
         tfIP.setEditable(true);
         btSubmit.setEnabled(true);
         taNotif.setText("Connection interrupted...");
