@@ -5,6 +5,7 @@
  */
 package ClientSide;
 
+import java.text.DecimalFormat;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
@@ -16,8 +17,8 @@ import javax.swing.JTextField;
  */
 
 public class PeriodicPinger extends Thread {
-    public static final double TRANS_SPEED = 0.03; // in metres per nanosecond
-    public static final int ITERATIONS = 1000, DELAY = 500;
+    public static final double TRANS_SPEED = 3e-7; // in metres per nanosecond
+    public static final int ITERATIONS = 10, DELAY = 100;
     
     PeriodicPinger(Client servercontact, JRadioButton rbconn, JButton btstop, JTextField tfip, 
             JButton btsubmit, JTextField tftranstime, JTextField tfapproxdist, JTextArea tanotif) {
@@ -43,9 +44,20 @@ public class PeriodicPinger extends Thread {
         
         try {
             while (serverContact.isConnected()) {
+                DecimalFormat format = new DecimalFormat("0.000000");
                 double timeDiff = serverContact.getTimeDiffInNanos(ITERATIONS);
-                tfTransTime.setText(timeDiff + "");
-                tfApproxDist.setText(TRANS_SPEED * timeDiff + "");
+                double approxDist = TRANS_SPEED * timeDiff;
+                
+                tfTransTime.setText(format.format(timeDiff));
+                tfApproxDist.setText(format.format(approxDist));
+                if (approxDist < 10) {
+                    taNotif.setText("Too close !!! Maintain social distancing...");
+                } else if (approxDist < 100) {
+                    taNotif.setText("Infected person within 100m detected !!!");
+                } else {
+                    taNotif.setText("");
+                }
+                
                 Thread.sleep(DELAY);
             }
         } catch (Exception e) {}

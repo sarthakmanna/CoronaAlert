@@ -12,7 +12,7 @@ class SingleServe extends Thread {
     Socket clientSocket;
     
     public void run() {
-        System.err.println(clientSocket.getLocalAddress()+ " Connected...");
+        System.err.println(clientSocket.getRemoteSocketAddress()+ " Connected...");
 
         try {
             DataInputStream is = new DataInputStream(clientSocket.getInputStream());
